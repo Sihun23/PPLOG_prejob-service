@@ -19,24 +19,31 @@ public class PrejobController {
 
     private final PrejobService prejobService;
 
-    @Operation(summary = "API 명세서 v0.3 line 27", description = "관심직군 목록 조회")
+    @Operation(summary = "API 명세서 v0.4 line 21", description = "관심직군 목록 조회")
     @GetMapping("/jobs")
     public ResponseEntity<ApiResponse<List<PrejobResponse>>> getAvailableJobs() {
         List<PrejobResponse> response = prejobService.getAvailableJobs();
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
-    @Operation(summary = "API 명세서 v0.3 line 28", description = "회원의 관심직군 목록 조회")
+    @Operation(summary = "API 명세서 v0.4 line 22", description = "회원의 관심직군 목록 조회")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<PrejobResponse.JobDetail>>> getMemberPrejobs() {
-        List<PrejobResponse.JobDetail> response = prejobService.getPrejobsForMember(5L);
+    public ResponseEntity<ApiResponse<List<PrejobResponse.JobDetail>>> getMemberPrejobs(@RequestHeader(name = "memberId") Long memberId) {
+        List<PrejobResponse.JobDetail> response = prejobService.getPrejobsForMember(memberId);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
-    @Operation(summary = "API 명세서 v0.3 line 29", description = "관심직군 등록/수정")
+    @Operation(summary = "API 명세서 v0.4 line 23", description = "관심직군 등록/수정")
     @PostMapping
-    public ResponseEntity<ApiResponse<Object>> savePrejobs(@Valid @RequestBody PrejobRequest prejobRequest) {
-        prejobService.savePrejobs(5L, prejobRequest);  // memberId 5 고정
+    public ResponseEntity<ApiResponse<Object>> savePrejobs(@RequestHeader(name = "memberId") Long memberId, @Valid @RequestBody PrejobRequest prejobRequest) {
+        prejobService.savePrejobs(memberId, prejobRequest);
+        return ResponseEntity.ok(ApiResponse.onSuccess(null));
+    }
+
+    @Operation(summary = "서비스간 API v0.4 line 3", description = "회원의 관심직군 삭제")
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<ApiResponse<Object>> deleteMemberPrejobs(@PathVariable Long memberId) {
+        prejobService.deletePrejobs(memberId);
         return ResponseEntity.ok(ApiResponse.onSuccess(null));
     }
 }

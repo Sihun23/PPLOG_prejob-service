@@ -11,5 +11,4 @@ public class PrejobsServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(PrejobsServiceApplication.class, args);
     }
-
 }
