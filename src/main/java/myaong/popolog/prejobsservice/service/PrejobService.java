@@ -27,6 +27,9 @@ public class PrejobService {
     @Transactional(readOnly = true)
     public List<PrejobResponse> getAvailableJobs() {
         List<Job> jobs = jobRepository.findAll();
+        if (jobs.isEmpty()) {
+            throw new ApiException(ApiCode.CATEGORY_NOT_FOUND, "존재하지 않는 카테고리입니다.");
+        }
         return jobs.stream()
                 .map(job -> new PrejobResponse(
                         job.getCategory().getName(),
@@ -59,7 +62,7 @@ public class PrejobService {
                 .map(jobId -> PreferredJob.builder()
                         .memberId(memberId)
                         .job(jobRepository.findById(jobId)
-                                .orElseThrow(() -> new ApiException(ApiCode.INVALID_DATA, "존재하지 않는 직군 ID입니다: " + jobId)))
+                                .orElseThrow(() -> new ApiException(ApiCode.JOB_NOT_FOUND, "존재하지 않는 직군입니다: " + jobId)))
                         .build())
                 .collect(Collectors.toList());
 
@@ -69,7 +72,6 @@ public class PrejobService {
     // 특정 회원의 모든 관심 직군 삭제
     public void deletePrejobs(Long memberId) {
         List<PreferredJob> preferredJobs = preferredJobRepository.findByMemberId(memberId);
-        // 해당 회원의 모든 관심 직군 삭제
         preferredJobRepository.deleteAll(preferredJobs);
     }
 }

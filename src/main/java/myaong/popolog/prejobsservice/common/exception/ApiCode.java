@@ -18,7 +18,9 @@ public enum ApiCode {
 	CATEGORY_CONFLICT(HttpStatus.CONFLICT, "JOB_4091", "해당 카테고리에 속하는 직군이 있어 삭제할 수 없습니다."),
 	JOB_DUPLICATED(HttpStatus.CONFLICT, "JOB_4092", "해당 카테고리 내에 이미 존재하는 직군 이름입니다."),
 	JOB_CONFLICT(HttpStatus.CONFLICT, "JOB_4093", "해당 직군을 선택한 회원이 있어 삭제할 수 없습니다."),
-	;
+
+	CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "JOB_4040", "존재하지 않는 카테고리입니다."),
+	JOB_NOT_FOUND(HttpStatus.NOT_FOUND, "JOB_4041", "존재하지 않는 직군입니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
