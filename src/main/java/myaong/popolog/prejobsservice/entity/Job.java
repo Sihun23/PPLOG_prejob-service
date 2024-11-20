@@ -19,23 +19,30 @@ public class Job extends BaseEntity {
 	@Column(name = "job_id")
 	private Long id;
 
-	// 카테고리
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id", nullable = false, updatable = false)
 	private Category category;
 
-	// 직군 이름
 	@Column(name = "job_name", nullable = false)
 	private String name;
 
-	// 순서
 	@Column(name = "`index`", nullable = false)
 	private Integer index;
 
+	// 기존 생성자
 	@Builder
 	public Job(Category category, String name, Integer index) {
 		this.category = category;
 		this.name = name;
 		this.index = index;
+	}
+
+	// 값 변경을 위한 update 메서드 (builder 사용)
+	public Job toBuilder(String name, Integer index) {
+		return Job.builder()
+				.category(this.category) // 변경되지 않는 속성 유지
+				.name(name != null ? name : this.name)
+				.index(index != null ? index : this.index)
+				.build();
 	}
 }
