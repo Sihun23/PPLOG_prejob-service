@@ -19,7 +19,7 @@ public class AdminJobController {
 
     private final AdminJobService adminJobService;
 
-    @Operation(summary = "API 명세서 v0.4 line 116", description = "직군 목록 조회")
+    @Operation(summary = "API 명세서 v0.5 line 116", description = "직군 목록 조회")
     @GetMapping
     public ResponseEntity<ApiResponse<List<CategoryJobResponse>>> getJobCategories(
             @RequestHeader(name = "memberId") Long memberId) {
@@ -27,7 +27,7 @@ public class AdminJobController {
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
-    @Operation(summary = "API 명세서 v0.4 line 117", description = "직군 순서 변경")
+    @Operation(summary = "API 명세서 v0.5 line 117", description = "직군 순서 변경")
     @PutMapping("/{jobId}/index")
     public ResponseEntity<ApiResponse<Object>> updateJobIndex(
             @RequestHeader(name = "memberId") Long memberId,
@@ -37,7 +37,7 @@ public class AdminJobController {
         return ResponseEntity.ok(ApiResponse.onSuccess(null));
     }
 
-    @Operation(summary = "API 명세서 v0.4 line 118", description = "신규 직군 추가")
+    @Operation(summary = "API 명세서 v0.5 line 118", description = "신규 직군 추가")
     @PostMapping
     public ResponseEntity<ApiResponse<Object>> addJob(
             @RequestHeader(name = "memberId") Long memberId,
@@ -46,7 +46,7 @@ public class AdminJobController {
         return ResponseEntity.ok(ApiResponse.onSuccess(null));
     }
 
-    @Operation(summary = "API 명세서 v0.4 line 119", description = "직군 이름 변경")
+    @Operation(summary = "API 명세서 v0.5 line 119", description = "직군 이름 변경")
     @PutMapping("/{jobId}")
     public ResponseEntity<ApiResponse<Object>> updateJobName(
             @RequestHeader(name = "memberId") Long memberId,
@@ -56,7 +56,7 @@ public class AdminJobController {
         return ResponseEntity.ok(ApiResponse.onSuccess(null));
     }
 
-    @Operation(summary = "API 명세서 v0.4 line 120", description = "직군 삭제")
+    @Operation(summary = "API 명세서 v0.5 line 120", description = "직군 삭제")
     @DeleteMapping("/{jobId}")
     public ResponseEntity<ApiResponse<Object>> deleteJob(
             @RequestHeader(name = "memberId") Long memberId,
