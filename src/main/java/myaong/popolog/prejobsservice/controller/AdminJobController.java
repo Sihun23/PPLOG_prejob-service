@@ -22,8 +22,7 @@ public class AdminJobController {
     @Operation(summary = "API 명세서 v0.4 line 116", description = "직군 목록 조회")
     @GetMapping
     public ResponseEntity<ApiResponse<List<CategoryJobResponse>>> getJobCategories(
-            @RequestHeader(name = "memberId") String memberId) {
-        Long convertedMemberId = Long.valueOf(memberId);
+            @RequestHeader(name = "memberId") Long memberId) {
         List<CategoryJobResponse> response = adminJobService.getJobCategories();
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
@@ -31,10 +30,9 @@ public class AdminJobController {
     @Operation(summary = "API 명세서 v0.4 line 117", description = "직군 순서 변경")
     @PutMapping("/{jobId}/index")
     public ResponseEntity<ApiResponse<Object>> updateJobIndex(
-            @RequestHeader(name = "memberId") String memberId,
+            @RequestHeader(name = "memberId") Long memberId,
             @PathVariable Long jobId,
             @Valid @RequestBody AdminPrejobRequest.UpdateIndex request) {
-        Long convertedMemberId = Long.valueOf(memberId);
         adminJobService.updateJobIndex(jobId, request.getIndex());
         return ResponseEntity.ok(ApiResponse.onSuccess(null));
     }
@@ -42,9 +40,8 @@ public class AdminJobController {
     @Operation(summary = "API 명세서 v0.4 line 118", description = "신규 직군 추가")
     @PostMapping
     public ResponseEntity<ApiResponse<Object>> addJob(
-            @RequestHeader(name = "memberId") String memberId,
+            @RequestHeader(name = "memberId") Long memberId,
             @Valid @RequestBody AdminPrejobRequest.AddJob request) {
-        Long convertedMemberId = Long.valueOf(memberId);
         adminJobService.addJob(request);
         return ResponseEntity.ok(ApiResponse.onSuccess(null));
     }
@@ -52,10 +49,9 @@ public class AdminJobController {
     @Operation(summary = "API 명세서 v0.4 line 119", description = "직군 이름 변경")
     @PutMapping("/{jobId}")
     public ResponseEntity<ApiResponse<Object>> updateJobName(
-            @RequestHeader(name = "memberId") String memberId,
+            @RequestHeader(name = "memberId") Long memberId,
             @PathVariable Long jobId,
             @Valid @RequestBody AdminPrejobRequest.UpdateName request) {
-        Long convertedMemberId = Long.valueOf(memberId);
         adminJobService.updateJobName(jobId, request.getName());
         return ResponseEntity.ok(ApiResponse.onSuccess(null));
     }
@@ -63,10 +59,10 @@ public class AdminJobController {
     @Operation(summary = "API 명세서 v0.4 line 120", description = "직군 삭제")
     @DeleteMapping("/{jobId}")
     public ResponseEntity<ApiResponse<Object>> deleteJob(
-            @RequestHeader(name = "memberId") String memberId,
+            @RequestHeader(name = "memberId") Long memberId,
             @PathVariable Long jobId) {
-        Long convertedMemberId = Long.valueOf(memberId);
         adminJobService.deleteJob(jobId);
         return ResponseEntity.ok(ApiResponse.onSuccess(null));
     }
 }
+
