@@ -27,16 +27,24 @@ public class PrejobService {
     @Transactional(readOnly = true)
     public List<PrejobResponse> getAvailableJobs() {
         List<Job> jobs = jobRepository.findAll();
+
         if (jobs.isEmpty()) {
             throw new ApiException(ApiCode.CATEGORY_NOT_FOUND, "존재하지 않는 카테고리입니다.");
         }
+
         return jobs.stream()
-                .map(job -> new PrejobResponse(
-                        job.getCategory().getName(),
-                        List.of(new PrejobResponse.JobDetail(job.getId(), job.getName()))
+                .collect(Collectors.groupingBy(job -> job.getCategory().getName())) // 카테고리별 그룹화
+                .entrySet().stream()
+                .map(entry -> new PrejobResponse(
+                        entry.getKey(), // 카테고리 이름
+                        entry.getValue().stream()
+                                .sorted((job1, job2) -> job1.getIndex().compareTo(job2.getIndex())) // index 기준 정렬
+                                .map(job -> new PrejobResponse.JobDetail(job.getId(), job.getName()))
+                                .collect(Collectors.toList())
                 ))
                 .collect(Collectors.toList());
     }
+
 
     // 회원의 관심 직군 조회
     @Transactional(readOnly = true)

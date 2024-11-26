@@ -34,6 +34,7 @@ public class AdminJobService {
                         category.getId(),
                         category.getName(),
                         category.getJobs().stream()
+                                .sorted((job1, job2) -> job1.getIndex().compareTo(job2.getIndex())) // index 기준 정렬
                                 .map(job -> new AdminCategoryJobResponse.JobDetail(
                                         job.getId(),
                                         job.getName(),
@@ -44,7 +45,6 @@ public class AdminJobService {
                 ))
                 .collect(Collectors.toList());
     }
-
 
 
     public void updateJobIndex(Long jobId, Integer newIndex) {
