@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class AdminCategoryJobResponse {
+    private Long categoryId;
     private String categoryName;
     private List<JobDetail> jobs;
 

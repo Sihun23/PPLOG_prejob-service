@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import myaong.popolog.prejobsservice.common.exception.ApiCode;
 import myaong.popolog.prejobsservice.common.exception.ApiException;
 import myaong.popolog.prejobsservice.dto.request.AdminPrejobRequest;
+import myaong.popolog.prejobsservice.dto.response.AdminCategoryJobResponse;
 import myaong.popolog.prejobsservice.dto.response.CategoryJobResponse;
 import myaong.popolog.prejobsservice.dto.response.PrejobResponse;
 import myaong.popolog.prejobsservice.entity.Category;
@@ -27,19 +28,24 @@ public class AdminJobService {
     private final PreferredJobRepository preferredJobRepository;
 
     @Transactional(readOnly = true)
-    public List<CategoryJobResponse> getJobCategories() {
+    public List<AdminCategoryJobResponse> getJobCategories() {
         return categoryRepository.findAll().stream()
-                .map(category -> new CategoryJobResponse(
+                .map(category -> new AdminCategoryJobResponse(
+                        category.getId(),
                         category.getName(),
                         category.getJobs().stream()
-                                .map(job -> new PrejobResponse(
-                                        category.getName(),
-                                        List.of(new PrejobResponse.JobDetail(job.getId(), job.getName()))
+                                .map(job -> new AdminCategoryJobResponse.JobDetail(
+                                        job.getId(),
+                                        job.getName(),
+                                        job.getIndex(),
+                                        (int) preferredJobRepository.countByJob(job)
                                 ))
                                 .collect(Collectors.toList())
                 ))
                 .collect(Collectors.toList());
     }
+
+
 
     public void updateJobIndex(Long jobId, Integer newIndex) {
         Job job = jobRepository.findById(jobId)
@@ -48,7 +54,7 @@ public class AdminJobService {
         jobRepository.save(updatedJob);
     }
 
-    public void addJob(AdminPrejobRequest.AddJob request) {
+    public AdminCategoryJobResponse.JobDetail addJob(AdminPrejobRequest.AddJob request) {
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ApiException(ApiCode.CATEGORY_NOT_FOUND));
         Job newJob = Job.builder()
@@ -56,8 +62,15 @@ public class AdminJobService {
                 .name(request.getName())
                 .index(category.getJobs().size() + 1)
                 .build();
-        jobRepository.save(newJob);
+        Job savedJob = jobRepository.save(newJob);
+        return new AdminCategoryJobResponse.JobDetail(
+                savedJob.getId(),
+                savedJob.getName(),
+                savedJob.getIndex(),
+                0 // 초기 memberCount
+        );
     }
+
 
     public void updateJobName(Long jobId, String name) {
         Job job = jobRepository.findById(jobId)
