@@ -65,6 +65,8 @@ public class PrejobService {
         List<PreferredJob> existingJobs = preferredJobRepository.findByMemberId(memberId);
         preferredJobRepository.deleteAll(existingJobs);
 
+        preferredJobRepository.flush();
+
         List<PreferredJob> newPreferredJobs = request.getPreJob().stream()
                 .distinct()
                 .map(jobId -> PreferredJob.builder()
