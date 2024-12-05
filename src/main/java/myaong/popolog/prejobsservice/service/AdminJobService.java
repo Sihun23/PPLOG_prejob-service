@@ -45,11 +45,29 @@ public class AdminJobService {
     }
 
     public void updateJobIndex(Long jobId, Integer newIndex) {
-        Job job = jobRepository.findById(jobId)
+        Job targetJob = jobRepository.findById(jobId)
                 .orElseThrow(() -> new ApiException(ApiCode.JOB_NOT_FOUND));
-        job.updateIndex(newIndex); // 인덱스 업데이트
-        jobRepository.save(job); // 변경 사항 저장
+
+        Integer currentIndex = targetJob.getIndex();
+        Category category = targetJob.getCategory();
+
+        // 충돌 방지를 위해 임시값 -999로 변경
+        targetJob.updateIndex(-999);
+        jobRepository.save(targetJob);
+
+        if (currentIndex < newIndex) {
+            // 위로 이동 -> 인덱스 감소 처리
+            jobRepository.updateIndexRangeDecrement(category, currentIndex + 1, newIndex);
+        } else if (currentIndex > newIndex) {
+            // 아래로 이동 -> 인덱스 증가 처리
+            jobRepository.updateIndexRangeIncrement(category, newIndex, currentIndex - 1);
+        }
+
+        // 최종 인덱스로 업데이트
+        targetJob.updateIndex(newIndex);
+        jobRepository.save(targetJob);
     }
+
 
     public AdminCategoryJobResponse.JobDetail addJob(AdminPrejobRequest.AddJob request) {
         Category category = categoryRepository.findById(request.getCategoryId())
