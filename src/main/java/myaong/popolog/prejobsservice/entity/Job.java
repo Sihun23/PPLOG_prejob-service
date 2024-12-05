@@ -29,7 +29,6 @@ public class Job extends BaseEntity {
 	@Column(name = "`index`", nullable = false)
 	private Integer index;
 
-	// 기존 생성자
 	@Builder
 	public Job(Category category, String name, Integer index) {
 		this.category = category;
@@ -37,12 +36,13 @@ public class Job extends BaseEntity {
 		this.index = index;
 	}
 
-	// 값 변경을 위한 update 메서드 (builder 사용)
-	public Job toBuilder(String name, Integer index) {
-		return Job.builder()
-				.category(this.category) // 변경되지 않는 속성 유지
-				.name(name != null ? name : this.name)
-				.index(index != null ? index : this.index)
-				.build();
+	// 이름 업데이트 메서드
+	public void updateName(String name) {
+		this.name = name;
+	}
+
+	// 인덱스 업데이트 메서드
+	public void updateIndex(Integer index) {
+		this.index = index;
 	}
 }

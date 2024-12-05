@@ -5,8 +5,6 @@ import myaong.popolog.prejobsservice.common.exception.ApiCode;
 import myaong.popolog.prejobsservice.common.exception.ApiException;
 import myaong.popolog.prejobsservice.dto.request.AdminPrejobRequest;
 import myaong.popolog.prejobsservice.dto.response.AdminCategoryJobResponse;
-import myaong.popolog.prejobsservice.dto.response.CategoryJobResponse;
-import myaong.popolog.prejobsservice.dto.response.PrejobResponse;
 import myaong.popolog.prejobsservice.entity.Category;
 import myaong.popolog.prejobsservice.entity.Job;
 import myaong.popolog.prejobsservice.repository.CategoryRepository;
@@ -46,37 +44,47 @@ public class AdminJobService {
                 .collect(Collectors.toList());
     }
 
-
     public void updateJobIndex(Long jobId, Integer newIndex) {
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new ApiException(ApiCode.JOB_NOT_FOUND));
-        Job updatedJob = job.toBuilder(null, newIndex);
-        jobRepository.save(updatedJob);
+        job.updateIndex(newIndex); // 인덱스 업데이트
+        jobRepository.save(job); // 변경 사항 저장
     }
 
     public AdminCategoryJobResponse.JobDetail addJob(AdminPrejobRequest.AddJob request) {
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ApiException(ApiCode.CATEGORY_NOT_FOUND));
+
+        // 중복된 jobName 확인
+        boolean exists = jobRepository.existsByCategoryAndName(category, request.getName());
+        if (exists) {
+            throw new ApiException(ApiCode.JOB_DUPLICATED, "해당 카테고리 내에 이미 존재하는 직군 이름입니다.");
+        }
+
+
         Job newJob = Job.builder()
                 .category(category)
                 .name(request.getName())
                 .index(category.getJobs().size() + 1)
                 .build();
+
         Job savedJob = jobRepository.save(newJob);
         return new AdminCategoryJobResponse.JobDetail(
                 savedJob.getId(),
                 savedJob.getName(),
                 savedJob.getIndex(),
-                0 // 초기 memberCount
+                0
         );
     }
+
+
 
 
     public void updateJobName(Long jobId, String name) {
         Job job = jobRepository.findById(jobId)
                 .orElseThrow(() -> new ApiException(ApiCode.JOB_NOT_FOUND));
-        Job updatedJob = job.toBuilder(name, null);
-        jobRepository.save(updatedJob);
+        job.updateName(name); // 이름 업데이트
+        jobRepository.save(job); // 변경 사항 저장
     }
 
     public void deleteJob(Long jobId) {
