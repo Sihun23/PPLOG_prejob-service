@@ -57,9 +57,6 @@ public class PrejobService {
 
     // 관심 직군 저장
     public void savePrejobs(Long memberId, PrejobRequest request) {
-        if (request.getPreJob().size() > 5 || request.getPreJob().size() < 1) {
-            throw new ApiException(ApiCode.INVALID_DATA, "관심 직군은 최소 1개, 최대 5개까지 선택할 수 있습니다.");
-        }
 
         // 기존 데이터 삭제 후 새로운 관심 직군 저장하는 방식
         List<PreferredJob> existingJobs = preferredJobRepository.findByMemberId(memberId);
