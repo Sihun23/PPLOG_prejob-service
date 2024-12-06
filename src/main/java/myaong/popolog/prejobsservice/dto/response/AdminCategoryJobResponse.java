@@ -7,14 +7,17 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class PrejobResponse {
-    private String categoryName; // 카테고리 이름
-    private List<JobDetail> jobs; // 직군 리스트
+public class AdminCategoryJobResponse {
+    private Long categoryId;
+    private String categoryName;
+    private List<JobDetail> jobs;
 
     @Getter
     @AllArgsConstructor
     public static class JobDetail {
         private Long jobId;
         private String jobName;
+        private Integer index;
+        private Integer memberCount;
     }
 }

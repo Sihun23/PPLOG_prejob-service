@@ -18,11 +18,9 @@ public class PreferredJob extends BaseEntity {
 	@Column(name = "preferred_job_id")
 	private Long id;
 
-	// 회원 아이디
 	@Column(name = "member_id", nullable = false, updatable = false)
 	private Long memberId;
 
-	// 직군
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "job_id", nullable = false, updatable = false)
 	private Job job;

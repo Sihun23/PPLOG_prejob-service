@@ -19,16 +19,13 @@ public class Job extends BaseEntity {
 	@Column(name = "job_id")
 	private Long id;
 
-	// 카테고리
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id", nullable = false, updatable = false)
 	private Category category;
 
-	// 직군 이름
 	@Column(name = "job_name", nullable = false)
 	private String name;
 
-	// 순서
 	@Column(name = "`index`", nullable = false)
 	private Integer index;
 
@@ -36,6 +33,16 @@ public class Job extends BaseEntity {
 	public Job(Category category, String name, Integer index) {
 		this.category = category;
 		this.name = name;
+		this.index = index;
+	}
+
+	// 이름 업데이트 메서드
+	public void updateName(String name) {
+		this.name = name;
+	}
+
+	// 인덱스 업데이트 메서드
+	public void updateIndex(Integer index) {
 		this.index = index;
 	}
 }
