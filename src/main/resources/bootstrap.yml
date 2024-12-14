@@ -1,7 +1,7 @@
 spring:
   cloud:
     config:
-      uri: http://172.16.210.30:8888
-      name: prejobs-service
+      uri: ${CONFIG_URL:http://172.16.210.30:8888} #config 서버
+      name: prejobs-service #서비스 이름
   profiles:
-    active: local
+    active: prod #활성화할 profile(local,dev,prod,onprem 중,,,)
