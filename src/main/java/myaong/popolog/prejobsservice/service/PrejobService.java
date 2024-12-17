@@ -7,6 +7,7 @@ import myaong.popolog.prejobsservice.dto.request.PrejobRequest;
 import myaong.popolog.prejobsservice.dto.response.PrejobResponse;
 import myaong.popolog.prejobsservice.entity.Job;
 import myaong.popolog.prejobsservice.entity.PreferredJob;
+import myaong.popolog.prejobsservice.feign.service.BlogService;
 import myaong.popolog.prejobsservice.repository.JobRepository;
 import myaong.popolog.prejobsservice.repository.PreferredJobRepository;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class PrejobService {
 
     private final PreferredJobRepository preferredJobRepository;
     private final JobRepository jobRepository;
+    private final BlogService blogService;
 
     // 카테고리별 선택 가능한 직군 목록 조회
     @Transactional(readOnly = true)
@@ -73,7 +75,9 @@ public class PrejobService {
                         .build())
                 .collect(Collectors.toList());
 
-        preferredJobRepository.saveAll(newPreferredJobs);
+        List<PreferredJob> prejobs = preferredJobRepository.saveAll(newPreferredJobs);
+
+        blogService.syncPrejobs(memberId, prejobs);
     }
 
     // 특정 회원의 모든 관심 직군 삭제
